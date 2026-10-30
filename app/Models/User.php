@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -28,5 +29,25 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }
