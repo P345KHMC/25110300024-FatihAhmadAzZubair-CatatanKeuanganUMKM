@@ -25,6 +25,7 @@
         <nav>
             <a href="{{ route('dashboard') }}">Dashboard</a>
             <a href="{{ route('categories.index') }}">Kategori</a>
+            <a href="{{ route('products.index') }}">Produk</a>
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" style="margin-top: 0">Keluar</button>
