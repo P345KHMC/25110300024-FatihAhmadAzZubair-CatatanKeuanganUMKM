@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Produki')
+@section('title', 'Produk')
 @section('content')
 <h2>Produk</h2>
 <a href="{{ route('products.create') }}">+ Tambah Produk</a>
@@ -22,7 +22,7 @@
             </td>
         </tr>
     @empty
-        <tr><td colspan="3">Belum ada produk</td></tr>
+        <tr><td colspan="4">Belum ada produk</td></tr>
     @endforelse
 </table>
 @endsection
