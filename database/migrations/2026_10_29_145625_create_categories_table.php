@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name', 100);
-            $table->string('type', 10); // pengeluaran / pemasukan
+            $table->string('type', 10); // expense / income
             $table->timestamps();
         });
     }
