@@ -13,7 +13,8 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 
 WORKDIR /var/www/html
 COPY . .
-RUN composer install --no-dev --optimize-autoloader --no-interaction \
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
+    && php artisan package:discover --ansi \
     && chown -R www-data:www-data storage bootstrap/cache
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
