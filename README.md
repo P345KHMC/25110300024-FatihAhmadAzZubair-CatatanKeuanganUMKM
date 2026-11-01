@@ -5,7 +5,7 @@ Aplikasi web full-stack untuk mencatat pemasukan dan pengeluaran usaha kecil (UM
 - **Nama / NIM:** Fatih Ahmad Az Zubair / 25110300024
 - **Live application:** https://fatihahmadazzubair-catatankeuanganumkm.onrender.com/login
 - **Repository:** https://github.com/P345KHMC/25110300024-FatihAhmadAzZubair-CatatanKeuanganUMKM.git
-- **Video presentasi dan demo:** [ISI LINK VIDEO]
+- **Video presentasi dan demo:** https://drive.google.com/file/d/1FJsHWOgvtbIwf86Nko8IZqWbG3v6af9u/view?usp=sharing
 
 ## Fitur
 
