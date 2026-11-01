@@ -1,58 +1,136 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Catatan Keuangan UMKM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web full-stack untuk mencatat pemasukan dan pengeluaran usaha kecil (UMKM), lengkap dengan dashboard ringkasan keuangan. Dibangun dengan Laravel (arsitektur MVC) dan MySQL sebagai tugas UAS Web Application Development, Universitas Cakrawala.
 
-## About Laravel
+- **Nama / NIM:** Fatih Ahmad Az Zubair / 25110300024
+- **Live application:** https://fatihahmadazzubair-catatankeuanganumkm.onrender.com/login
+- **Repository:** https://github.com/P345KHMC/25110300024-FatihAhmadAzZubair-CatatanKeuanganUMKM.git
+- **Video presentasi dan demo:** [ISI LINK VIDEO]
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Registrasi, login, dan logout dengan manajemen session
+- CRUD **Kategori** (pemasukan / pengeluaran)
+- CRUD **Produk** (nama, harga, stok)
+- CRUD **Transaksi** (kategori, produk opsional, jumlah, tanggal, keterangan)
+- **Dashboard**: total pemasukan, total pengeluaran, saldo, ringkasan bulan berjalan, total per kategori, dan 5 transaksi terakhir
+- Hak akses berbasis role (admin dan owner)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Teknologi
 
-## Learning Laravel
+- Laravel 13 (PHP 8.4+), Blade, Eloquent ORM
+- MySQL (relasional)
+- Git untuk version control
+- Deployment: Render (Docker) dengan database MySQL di Aiven
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Hak Akses Pengguna
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Role | Akses |
+|---|---|
+| **owner** (default saat registrasi) | Mengelola kategori, produk, dan transaksi **miliknya sendiri**. Dashboard hanya menampilkan datanya sendiri. |
+| **admin** | Dashboard menampilkan ringkasan data **seluruh pengguna**. Middleware `admin` tersedia untuk membatasi route khusus admin. |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+Role `admin` tidak bisa didapat lewat form registrasi. Kolom `role` tidak ada di `$fillable`, sehingga akun admin hanya dibuat lewat seeder.
 
-## Agentic Development
+## Struktur Database
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Empat tabel utama yang saling berelasi (selain tabel bawaan Laravel seperti `sessions` dan `migrations`):
 
-```bash
-composer require laravel/boost --dev
+- `users` (id, name, email, password, role)
+- `categories` (id, user_id, name, type: income/expense)
+- `products` (id, user_id, name, price, stock)
+- `transactions` (id, user_id, category_id, product_id nullable, amount, description, transaction_date)
 
-php artisan boost:install
+Relasi: satu user memiliki banyak categories, products, dan transactions. Satu category dan satu product (opsional) dapat dipakai oleh banyak transactions.
+
+## Struktur MVC
+
+```
+app/
+  Http/
+    Controllers/   AuthController, CategoryController, ProductController,
+                   TransactionController, DashboardController
+    Middleware/    AdminOnly
+  Models/          User, Category, Product, Transaction
+database/
+  migrations/      skema tabel
+  seeders/         AdminSeeder
+resources/views/   layouts, auth, categories, products, transactions, dashboard
+routes/web.php     definisi routing
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Instalasi di Komputer Lokal
 
-## Contributing
+**Prasyarat:** PHP 8.4 atau lebih baru, Composer, MySQL (misalnya lewat XAMPP), dan Git.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Clone repository dan masuk ke foldernya:
+   ```
+   git clone https://github.com/P345KHMC/25110300024-FatihAhmadAzZubair-CatatanKeuanganUMKM.git
+   cd 25110300024-FatihAhmadAzZubair-CatatanKeuanganUMKM
+   ```
+2. Pasang dependensi:
+   ```
+   composer install
+   ```
+3. Salin file environment dan buat application key:
+   ```
+   copy .env.example .env
+   php artisan key:generate
+   ```
+   (di Linux/macOS gunakan `cp` sebagai ganti `copy`)
+4. Nyalakan MySQL (XAMPP), lalu buat database kosong, misalnya `uas_finansial`, lewat phpMyAdmin.
+5. Sesuaikan bagian database di `.env`:
+   ```
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=uas_finansial
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+6. Siapkan isi database dengan **salah satu** cara:
+   - **Migrasi dan seeder:**
+     ```
+     php artisan migrate
+     php artisan db:seed --class=AdminSeeder
+     ```
+   - **Import file SQL:** import `25110300024-FatihAhmadAzZubair-CatatanKeuanganUMKM.sql` lewat phpMyAdmin (sudah berisi struktur dan data contoh). File-nya berada di folder database
+7. Jalankan aplikasi:
+   ```
+   php artisan serve
+   ```
+   Buka `http://127.0.0.1:8000`.
 
-## Code of Conduct
+## Akun untuk Pengujian
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Role | Email | Password |
+|---|---|---|
+| admin | admin@example.com | password123 |
+| owner | budi@example.com | budi1234 |
 
-## Security Vulnerabilities
+Pengguna baru juga bisa mendaftar lewat halaman `/register` (otomatis berperan sebagai owner).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Keamanan
 
-## License
+- **CSRF:** semua form memakai `@csrf`, dan middleware bawaan Laravel memverifikasi token pada setiap request POST/PUT/DELETE.
+- **XSS:** keluaran Blade `{{ }}` otomatis di-escape.
+- **SQL Injection:** seluruh query lewat Eloquent / Query Builder yang memakai parameter binding.
+- **Validasi server-side:** setiap input divalidasi di controller; pilihan kategori dan produk diverifikasi milik user yang sedang login.
+- **Password** di-hash (cast `hashed`), session di-regenerate saat login dan di-invalidate saat logout.
+- **Otorisasi data:** setiap edit atau hapus memeriksa kepemilikan data (`403` jika bukan pemilik).
+- **Mass assignment:** hanya kolom di `$fillable` yang bisa diisi massal.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Deployment
+
+Aplikasi dijalankan di **Render** sebagai Web Service berbasis Docker (`Dockerfile`), dengan database **MySQL di Aiven** (koneksi SSL memakai sertifikat di folder `certs/`).
+
+Langkah singkat:
+
+1. Buat layanan MySQL di Aiven, catat host, port, user, password, dan nama database, lalu unduh CA certificate ke `certs/`.
+2. Push kode ke GitHub.
+3. Di Render, buat **Web Service** dari repository, runtime **Docker**.
+4. Isi environment variables (`APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, `APP_TIMEZONE`, `DB_*`, `MYSQL_ATTR_SSL_CA`).
+5. Saat container berjalan, `docker-entrypoint.sh` menjalankan `php artisan migrate --force` dan seeder admin sebelum menyalakan Apache.
+
+Catatan: layanan gratis dapat "tidur" bila lama tidak diakses, sehingga akses pertama bisa lambat.
+Catatan (1): Saya meng-deploy proyek ini dengan akun Render teman saya, Fauzi Ilyas Saputra (25110300008) karena akun saya tidak bisa digunakan karena alasan tertentu
